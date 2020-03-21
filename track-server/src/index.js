@@ -2,15 +2,11 @@
 //import express
 require('./models/User')
 const mongoose = require('mongoose')
-
-
-
-
 const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
-
 const authRoutes = require('./routes/authRoutes')
+const requireAuth = require('./middlewares/requireAuth')
 
 const app = express()
 
@@ -33,8 +29,8 @@ mongoose.connection.on('error',(err)=>{
     console.error('Errror connection to mongo',err)
 })
 
-app.get("/",(req,res)=>{
-    res.send('Hi There')
+app.get("/",requireAuth,(req,res)=>{
+    res.send(`Your email : ${req.user.email}`)
 })
 
 app.listen(3000,()=>{
