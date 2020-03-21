@@ -1,12 +1,21 @@
 
 //import express
+require('./models/User')
 const mongoose = require('mongoose')
+
+
+
+
 const express = require('express')
+const bodyParser = require('body-parser')
 require('dotenv').config()
 
-
+const authRoutes = require('./routes/authRoutes')
 
 const app = express()
+
+app.use(bodyParser.json())
+app.use(authRoutes)
 
 const mongoDB = process.env.URL
 
