@@ -1,31 +1,29 @@
 const mongoose = require('mongoose')
 
-
-const pointSchema  = new mongoose.Schema({
+const pointSchema = new mongoose.Schema({
     timestamp: Number,
-    coords:{
+    coords : {
         latitude : Number,
-        longitude : Number,
+        longitudee : Number,
         altitude : Number,
-        accuracy : Number,
+        accurancy : Number,
         heading : Number,
         speed : Number
     }
-
 })
 
+
+
 const trackSchema = new mongoose.Schema({
-    //Instance of a user
-   userId:{
-       type: mongoose.Schema.Types.ObjectId,
-       ref : 'User'
-   },
-   name :{
-       type: String,
-       default: ''
-   },
-   //seperate Schema Object 
-   locations: [pointSchema]
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'User'
+    },
+    name:{
+        type: 'String',
+        default: ''
+    },
+    locations: [pointSchema]
 })
 
 mongoose.model('Track',trackSchema)

@@ -1,41 +1,45 @@
-
-//import express
+require('dotenv').config()
 require('./models/User')
 require('./models/Track')
-const mongoose = require('mongoose')
 const express = require('express')
+const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-require('dotenv').config()
+
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false })) 
+app.use(bodyParser.json())
+
 const authRoutes = require('./routes/authRoutes')
 const trackRoutes = require('./routes/trackRoutes')
 const requireAuth = require('./middlewares/requireAuth')
 
-const app = express()
 
-app.use(bodyParser.json())
+
 app.use(authRoutes)
+app.use(trackRoutes)
 
-const mongoDB = process.env.URL
+const mongoURI = process.env.URL
 
-mongoose.connect(mongoDB,{
-    useNewUrlParser:true,
-    useUnifiedTopology: true,
-    useCreateIndex :true
+mongoose.connect(mongoURI,{
+    useUnifiedTopology:true,
+    useCreateIndex:true,
+    useNewUrlParser:true, 
 })
-
 
 mongoose.connection.on('connected',()=>{
     console.log('Connected to mongo instance')
 })
 
 mongoose.connection.on('error',(err)=>{
-    console.error('Errror connection to mongo',err)
+    console.error('Error connecting to mongo',err)
 })
 
-app.get("/",requireAuth,(req,res)=>{
-    res.send(`Your email : ${req.user.email}`)
-})
+
+app.get('/',requireAuth,(req,res)=>{
+    res.send(`You email: ${req.user.email}`)
+});
 
 app.listen(3000,()=>{
-    console.log('Listening on Prot 3000')
+    console.log('Listening on port 3000')
 })
