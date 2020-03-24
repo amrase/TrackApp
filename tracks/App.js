@@ -10,7 +10,7 @@ import TrackListScreen from './src/screens/TrackListScreen'
 import TrackDetailScreen from './src/screens/TrackDetailScreen'
 import AccountScreen from './src/screens/AccoutScreen'
 
-import {Provider as AuthProvider} from './context/AuthContext'
+import {Provider as AuthProvider} from './src/context/AuthContext'
 
 
 
