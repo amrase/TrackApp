@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {View,Text,StyleSheet} from 'react-native'
+import { Button} from 'react-native-elements'
+
+import {Context as AuthContext} from '../context/AuthContext'
 
 const AccountScreen = () =>{
-    return (   
-        <Text style={{fontSize:48}}>AccountScreen</Text>
+    const {signout} = useContext(AuthContext)
+    return (  
+        <> 
+        <Text style={{fontSize:48, marginTop:100}}>AccountScreen</Text>
+        <Button title='Sign Out' onPress={signout}/>
+        </>
 )}
 
 

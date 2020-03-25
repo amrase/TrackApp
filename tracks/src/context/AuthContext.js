@@ -9,19 +9,41 @@ const authReducer  = (state,action)=>{
         case 'add_error':
             return {...state,errorMessage:action.payload}
         case 'signup':
-            return {errorMessage:'',token:action.payload}    
+            return {errorMessage:'',token:action.payload}  
+        case 'signin':
+            return {errorMessage:'',token:action.payload}  
+        case 'clear_error_message':
+            return  {...state,errorMessage:''}
+        case 'signup':
+            return {token:'',errorMessage:''}
         default:
             return state
     }
 
 }
 
+const tryLocalSignin = dispatch => async () =>{
+    const token = await AsyncStorage.getItem('token');
+    console.log(token)
+    if(token){
+        dispatch({type:'signin',payload:token})
+        navigate('TrackList')
+    }else{
+        navigate('Signup')
+    }
+} 
 
-const signup = (dispatch) =>{
-    return async ({email,password}) =>{
+
+// const clearErrorMessage  =  (dispatch) =>{
+//   dispatch({type:'clear_error_message'})
+// }
+
+
+const signup = (dispatch) => async ({email,password}) =>{
         //make api request to sign up with that email and password
         try{
             const response = await trackerApi.post('/signup',{email,password})
+            console.log('response',response)
             await AsyncStorage.setItem('token',response.data.token)
             dispatch({type:'signup',payload:response.data.token})
             navigate('TrackList')
@@ -32,22 +54,35 @@ const signup = (dispatch) =>{
         }
     
     }
-}
 
-const signin = (dispatch) =>{
-    return () =>{
 
+
+
+const signin = (dispatch) =>async ({email,password}) =>{
+    try{ 
+        const response  = await trackerApi.post('/signin',{email,password})
+        await AsyncStorage.setItem('token',response.data.token)
+        console.log('response',response)
+        dispatch({type:'signin',payload:response.data.token})
+        navigate('TrackList')
+    }
+    catch(err){
+        console.log(err)
+        dispatch({type:'add_error',payload:'Something went wrong with SignIn'})
     }
 }
 
-const signout = () =>{
-    return () =>{
 
-    }
+const signout = (dispatch) => async () => {
+        await AsyncStorage.removeItem('token')
+        dispatch({type:'signout'})
+        navigate('loginFlow')
 }
+
+
 
 export const {Provider,Context} = createDataContext(
     authReducer,
-    {signup,signin,signout},
+    {signup,signin,signout,tryLocalSignin},
     {token:null,errorMessage:''}
 )
